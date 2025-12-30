@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  external_labels:
+    dc: "{{ dc }}"
+    env: "{{ env }}"
+    owner: "{{ owner }}"
+
+scrape_configs:
+  - job_name: vmagent
+    static_configs:
+      - targets: ['localhost:8429']
+
+  - job_name: victoriametrics-cluster
+    static_configs:
+      - targets:
+          - 'localhost:8480'
+          - 'localhost:8481'
+          - 'localhost:8482'
+
+  - job_name: node_exporter
+    static_configs:
+      - targets: ['localhost:9100']
