@@ -1,54 +1,12 @@
 ---
-- name: Create node_exporter group
-  ansible.builtin.group:
-    name: "{{ node_exporter_group }}"
-    state: present
+- name: Create user and group
+  ansible.builtin.include_tasks: user.yml
 
-- name: Create node_exporter user
-  ansible.builtin.user:
-    name: "{{ node_exporter_user }}"
-    group: "{{ node_exporter_group }}"
-    system: true
-    shell: /usr/sbin/nologin
+- name: Install Node Exporter
+  ansible.builtin.include_tasks: install.yml
 
-- name: Download Node Exporter
-  ansible.builtin.get_url:
-    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.{{ node_exporter_arch }}.tar.gz"
-    dest: "/tmp/node_exporter.tar.gz"
-    mode: "0644"
+- name: Configure service
+  ansible.builtin.include_tasks: service.yml
 
-- name: Create extraction directory
-  ansible.builtin.file:
-    path: /tmp/node_exporter_extract
-    state: directory
-    mode: "0755"
-
-- name: Extract Node Exporter
-  ansible.builtin.unarchive:
-    src: "/tmp/node_exporter.tar.gz"
-    dest: "/tmp/node_exporter_extract"
-    remote_src: true
-
-- name: Move binary to /usr/local/bin
-  ansible.builtin.copy:
-    src: "/tmp/node_exporter_extract/node_exporter-{{ node_exporter_version }}.{{ node_exporter_arch }}/node_exporter"
-    dest: "/usr/local/bin/node_exporter"
-    mode: "0755"
-    owner: root
-    group: root
-    remote_src: true
-  notify: Restart Node Exporter
-
-- name: Setup Systemd Service
-  ansible.builtin.template:
-    src: node-exporter.service.j2
-    dest: /etc/systemd/system/node-exporter.service
-    mode: "0644"
-  notify: Restart Node Exporter
-
-- name: Start Node Exporter
-  ansible.builtin.systemd:
-    name: node-exporter
-    state: started
-    enabled: true
-    daemon_reload: true
+- name: Start service
+  ansible.builtin.include_tasks: start.yml
