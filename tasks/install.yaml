@@ -1,0 +1,28 @@
+---
+- name: Download Node Exporter
+  ansible.builtin.get_url:
+    url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.{{ node_exporter_arch }}.tar.gz"
+    dest: /tmp/node_exporter.tar.gz
+    mode: "0644"
+
+- name: Create extraction directory
+  ansible.builtin.file:
+    path: /tmp/node_exporter_extract
+    state: directory
+    mode: "0755"
+
+- name: Extract Node Exporter
+  ansible.builtin.unarchive:
+    src: /tmp/node_exporter.tar.gz
+    dest: /tmp/node_exporter_extract
+    remote_src: true
+
+- name: Move binary to /usr/local/bin
+  ansible.builtin.copy:
+    src: "/tmp/node_exporter_extract/node_exporter-{{ node_exporter_version }}.{{ node_exporter_arch }}/node_exporter"
+    dest: /usr/local/bin/node_exporter
+    mode: "0755"
+    owner: root
+    group: root
+    remote_src: true
+  notify: Restart Node Exporter
