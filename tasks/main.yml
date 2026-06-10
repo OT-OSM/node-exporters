@@ -1,0 +1,12 @@
+---
+- name: Create user and group
+  ansible.builtin.include_tasks: user.yml
+
+- name: Install Node Exporter
+  ansible.builtin.include_tasks: install.yml
+
+- name: Configure service
+  ansible.builtin.include_tasks: service.yml
+
+- name: Start service
+  ansible.builtin.include_tasks: start.yml

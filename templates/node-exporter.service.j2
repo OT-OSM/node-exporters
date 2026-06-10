@@ -1,0 +1,17 @@
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=node_exporter
+Group=node_exporter
+# Deploying as a single-binary "Metrics Collector"
+# Using Systemd to manage memory limits.
+ExecStart=/usr/local/bin/node_exporter --collector.systemd --collector.processes
+Restart=always
+MemoryLimit=64M
+CPUQuota=5%
+
+[Install]
+WantedBy=multi-user.target
