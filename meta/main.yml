@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  author: Shubham Rathi
+  description: Install and configure Node Exporter on Ubuntu systems
+  company: Opstree Solutions
+  license: GPLv3
+  min_ansible_version: "2.12"
+  role_name: node_exporter
+  namespace: ot-osm
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+
+  galaxy_tags:
+    - opstree
+    - otosm
+    - nodeexporter
+    - devops
+
+dependencies: []
